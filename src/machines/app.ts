@@ -19,7 +19,16 @@ export type AppTags = TagsFrom<typeof appMachine>
 export type CivToggleEnabledEvent = { type: 'civ.toggle.enabled'; civ: Civ }
 export type CivEnableEvent = { type: 'civ.enable'; civ: Civ }
 export type CivDisableEvent = { type: 'civ.disable'; civ: Civ }
-export type CivEvent = CivToggleEnabledEvent | CivEnableEvent | CivDisableEvent
+export type CivTogglePlayedEvent = { type: 'civ.toggle.played'; civ: Civ }
+export type CivPlayEvent = { type: 'civ.play'; civ: Civ }
+export type CivUnplayEvent = { type: 'civ.unplay'; civ: Civ }
+export type CivEvent =
+  | CivToggleEnabledEvent
+  | CivEnableEvent
+  | CivDisableEvent
+  | CivTogglePlayedEvent
+  | CivPlayEvent
+  | CivUnplayEvent
 
 export const appMachine = setup({
   types: {
@@ -34,22 +43,20 @@ export const appMachine = setup({
   actions: {
     civToggleEnabled: raise(({ context, event }) => {
       assertEvent(event, 'civ.toggle.enabled')
-      if (context.enabled.includes(event.civ)) {
-        return {
-          type: 'civ.disable',
-          civ: event.civ,
-        } as const
-      }
-
-      return {
-        type: 'civ.enable',
-        civ: event.civ,
-      } as const
+      return context.enabled.includes(event.civ) ?
+          ({ type: 'civ.disable', civ: event.civ } as const)
+        : ({ type: 'civ.enable', civ: event.civ } as const)
+    }),
+    civTogglePlayed: raise(({ context, event }) => {
+      assertEvent(event, 'civ.toggle.played')
+      return context.played.includes(event.civ) ?
+          ({ type: 'civ.unplay', civ: event.civ } as const)
+        : ({ type: 'civ.play', civ: event.civ } as const)
     }),
     disableCiv: assign({
       enabled: ({ context, event }) => {
         assertEvent(event, 'civ.disable')
-        return context.enabled.filter((c) => c !== event.civ)
+        return context.enabled.filter((civ) => civ !== event.civ)
       },
     }),
     enableCiv: assign({
@@ -58,16 +65,34 @@ export const appMachine = setup({
         return [...context.enabled, event.civ]
       },
     }),
+    playCiv: assign({
+      played: ({ context, event }) => {
+        assertEvent(event, 'civ.play')
+        return [...context.played, event.civ]
+      },
+    }),
     randomize: assign({
       currentCiv: ({ context }) => {
-        let nextCiv
+        const unplayedCivs = context.enabled.filter(
+          (civ) => !context.played.includes(civ),
+        )
 
         // prevent next civ from being the same as the current civ
+        let nextCiv
         do {
-          nextCiv = getRandomItemFrom(context.enabled)
+          nextCiv = getRandomItemFrom(unplayedCivs)
         } while (nextCiv === context.currentCiv)
 
         return nextCiv
+      },
+    }),
+    resetPlayedCivs: assign({
+      played: () => [],
+    }),
+    unplayCiv: assign({
+      played: ({ context, event }) => {
+        assertEvent(event, 'civ.unplay')
+        return context.played.filter((civ) => civ !== event.civ)
       },
     }),
     unsetCurrentCivIfNoLongerEnabled: assign({
@@ -83,6 +108,12 @@ export const appMachine = setup({
     }),
   },
   guards: {
+    allCivsPlayed: ({ context }) => {
+      const remainingCivs = context.enabled.filter(
+        (civ) => !context.played.includes(civ),
+      )
+      return remainingCivs.length === 0
+    },
     hasAtLeast2CivsEnabled: ({ context }) => context.enabled.length > 1,
   },
 }).createMachine({
@@ -103,6 +134,15 @@ export const appMachine = setup({
       actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled'],
       target: '.indeterminate',
     },
+    'civ.toggle.played': {
+      actions: 'civTogglePlayed',
+    },
+    'civ.play': {
+      actions: 'playCiv',
+    },
+    'civ.unplay': {
+      actions: 'unplayCiv',
+    },
   },
   states: {
     indeterminate: {
@@ -119,9 +159,15 @@ export const appMachine = setup({
     valid: {
       tags: 'randomizable',
       on: {
-        randomize: {
-          actions: 'randomize',
-        },
+        randomize: [
+          {
+            guard: 'allCivsPlayed',
+            actions: ['resetPlayedCivs', 'randomize'],
+          },
+          {
+            actions: 'randomize',
+          },
+        ],
       },
     },
     invalid: {},
