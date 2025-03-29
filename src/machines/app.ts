@@ -2,6 +2,7 @@ import { getRandomItemFrom } from '@/array'
 import { CIVS } from '@/constants'
 import type { Civ } from '@/types'
 import { createActorContext } from '@xstate/react'
+import { useCallback } from 'react'
 import {
   assertEvent,
   assign,
@@ -192,12 +193,34 @@ export const usePlayedCivs = () =>
 export const useIsRandomizable = () =>
   useAppSelector((snapshot) => snapshot.hasTag('randomizable'))
 
-export const useCiv = (civ: Civ) => {
-  const enabled = useEnabledCivs()
-  const played = usePlayedCivs()
+export const useCiv = (
+  civ: Civ,
+): {
+  isEnabled: boolean
+  hasBeenPlayed: boolean
+  toggleEnabled: () => void
+  togglePlayed: () => void
+} => {
+  const app = useAppActorRef()
+  const isEnabled = useEnabledCivs().includes(civ)
+  const hasBeenPlayed = usePlayedCivs().includes(civ)
+
+  const toggleEnabled = useCallback(() => {
+    app.send(
+      isEnabled ? { type: 'civ.disable', civ } : { type: 'civ.enable', civ },
+    )
+  }, [app, civ, isEnabled])
+
+  const togglePlayed = useCallback(() => {
+    app.send(
+      hasBeenPlayed ? { type: 'civ.unplay', civ } : { type: 'civ.play', civ },
+    )
+  }, [app, civ, hasBeenPlayed])
 
   return {
-    isEnabled: enabled.includes(civ),
-    hasBeenPlayed: played.includes(civ),
+    isEnabled,
+    hasBeenPlayed,
+    toggleEnabled,
+    togglePlayed,
   }
 }
