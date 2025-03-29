@@ -1,5 +1,5 @@
 {
-  "name": "aoe2-random-civ",
+  "name": "@aoe2-studio/aoe2-random-civ",
   "version": "0.1.0",
   "private": true,
   "scripts": {

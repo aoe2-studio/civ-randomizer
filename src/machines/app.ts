@@ -46,7 +46,7 @@ export const appMachine = setup({
     enableCiv: assign({
       enabled: ({ context, event }) => {
         assertEvent(event, 'civ.enable')
-        return [...context.enabled, event.civ]
+        return [...context.enabled, event.civ].sort()
       },
     }),
     playCiv: assign({
