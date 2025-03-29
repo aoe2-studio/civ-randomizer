@@ -6,7 +6,6 @@ import { useCallback } from 'react'
 import {
   assertEvent,
   assign,
-  raise,
   setup,
   type ContextFrom,
   type EventFrom,
@@ -17,17 +16,13 @@ export type AppContext = ContextFrom<typeof appMachine>
 export type AppEvent = EventFrom<typeof appMachine>
 export type AppTags = TagsFrom<typeof appMachine>
 
-export type CivToggleEnabledEvent = { type: 'civ.toggle.enabled'; civ: Civ }
 export type CivEnableEvent = { type: 'civ.enable'; civ: Civ }
 export type CivDisableEvent = { type: 'civ.disable'; civ: Civ }
-export type CivTogglePlayedEvent = { type: 'civ.toggle.played'; civ: Civ }
 export type CivPlayEvent = { type: 'civ.play'; civ: Civ }
 export type CivUnplayEvent = { type: 'civ.unplay'; civ: Civ }
 export type CivEvent =
-  | CivToggleEnabledEvent
   | CivEnableEvent
   | CivDisableEvent
-  | CivTogglePlayedEvent
   | CivPlayEvent
   | CivUnplayEvent
 
@@ -42,18 +37,6 @@ export const appMachine = setup({
     tags: {} as 'randomizable',
   },
   actions: {
-    civToggleEnabled: raise(({ context, event }) => {
-      assertEvent(event, 'civ.toggle.enabled')
-      return context.enabled.includes(event.civ) ?
-          ({ type: 'civ.disable', civ: event.civ } as const)
-        : ({ type: 'civ.enable', civ: event.civ } as const)
-    }),
-    civTogglePlayed: raise(({ context, event }) => {
-      assertEvent(event, 'civ.toggle.played')
-      return context.played.includes(event.civ) ?
-          ({ type: 'civ.unplay', civ: event.civ } as const)
-        : ({ type: 'civ.play', civ: event.civ } as const)
-    }),
     disableCiv: assign({
       enabled: ({ context, event }) => {
         assertEvent(event, 'civ.disable')
@@ -124,9 +107,6 @@ export const appMachine = setup({
   },
   initial: 'indeterminate',
   on: {
-    'civ.toggle.enabled': {
-      actions: 'civToggleEnabled',
-    },
     'civ.enable': {
       actions: 'enableCiv',
       target: '.indeterminate',
@@ -134,9 +114,6 @@ export const appMachine = setup({
     'civ.disable': {
       actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled'],
       target: '.indeterminate',
-    },
-    'civ.toggle.played': {
-      actions: 'civTogglePlayed',
     },
     'civ.play': {
       actions: 'playCiv',
