@@ -24,7 +24,7 @@ export const Configuration = () => {
               <input
                 type="checkbox"
                 checked={enabled.includes(civ)}
-                onChange={() => app.send({ type: 'civ.toggle', civ })}
+                onChange={() => app.send({ type: 'civ.toggle.enabled', civ })}
               />
               <span className="flex items-center gap-0.5">
                 <CivIcon civ={civ} size={30} />

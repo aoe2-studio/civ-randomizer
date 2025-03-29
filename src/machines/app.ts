@@ -5,6 +5,7 @@ import { createActorContext } from '@xstate/react'
 import {
   assertEvent,
   assign,
+  raise,
   setup,
   type ContextFrom,
   type EventFrom,
@@ -15,6 +16,11 @@ export type AppContext = ContextFrom<typeof appMachine>
 export type AppEvent = EventFrom<typeof appMachine>
 export type AppTags = TagsFrom<typeof appMachine>
 
+export type CivToggleEnabledEvent = { type: 'civ.toggle.enabled'; civ: Civ }
+export type CivEnableEvent = { type: 'civ.enable'; civ: Civ }
+export type CivDisableEvent = { type: 'civ.disable'; civ: Civ }
+export type CivEvent = CivToggleEnabledEvent | CivEnableEvent | CivDisableEvent
+
 export const appMachine = setup({
   types: {
     context: {} as {
@@ -22,17 +28,34 @@ export const appMachine = setup({
       enabled: Civ[]
       played: Civ[]
     },
-    events: {} as { type: 'civ.toggle'; civ: Civ } | { type: 'randomize' },
+    events: {} as CivEvent | { type: 'randomize' },
     tags: {} as 'randomizable',
   },
   actions: {
-    toggleCiv: assign({
-      enabled: ({ context, event }) => {
-        assertEvent(event, 'civ.toggle')
+    civToggleEnabled: raise(({ context, event }) => {
+      assertEvent(event, 'civ.toggle.enabled')
+      if (context.enabled.includes(event.civ)) {
+        return {
+          type: 'civ.disable',
+          civ: event.civ,
+        } as const
+      }
 
-        return context.enabled.includes(event.civ) ?
-            context.enabled.filter((c) => c !== event.civ)
-          : [...context.enabled, event.civ]
+      return {
+        type: 'civ.enable',
+        civ: event.civ,
+      } as const
+    }),
+    disableCiv: assign({
+      enabled: ({ context, event }) => {
+        assertEvent(event, 'civ.disable')
+        return context.enabled.filter((c) => c !== event.civ)
+      },
+    }),
+    enableCiv: assign({
+      enabled: ({ context, event }) => {
+        assertEvent(event, 'civ.enable')
+        return [...context.enabled, event.civ]
       },
     }),
     randomize: assign({
@@ -69,12 +92,17 @@ export const appMachine = setup({
   },
   initial: 'indeterminate',
   on: {
-    'civ.toggle': [
-      {
-        actions: ['toggleCiv', 'unsetCurrentCivIfNoLongerEnabled'],
-        target: '.indeterminate',
-      },
-    ],
+    'civ.toggle.enabled': {
+      actions: 'civToggleEnabled',
+    },
+    'civ.enable': {
+      actions: 'enableCiv',
+      target: '.indeterminate',
+    },
+    'civ.disable': {
+      actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled'],
+      target: '.indeterminate',
+    },
   },
   states: {
     indeterminate: {
