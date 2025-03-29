@@ -9,6 +9,8 @@ export const Configuration = () => {
 
   return (
     <div className="@container">
+      <a id="configuration" />
+
       <h2>Configuration</h2>
       <p className="lead">
         Choose which civilizations you want to play with. Civs will be
@@ -25,13 +27,7 @@ export const Configuration = () => {
                 onChange={() => app.send({ type: 'civ.toggle', civ })}
               />
               <span className="flex items-center gap-0.5">
-                <span
-                  style={{
-                    opacity: enabled.includes(civ) ? 1 : 0.5,
-                  }}
-                >
-                  <CivIcon civ={civ} size={30} />
-                </span>
+                <CivIcon civ={civ} size={30} />
                 {capitalize(civ)}
               </span>
             </label>

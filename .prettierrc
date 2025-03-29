@@ -9,5 +9,6 @@
     "prettier-plugin-tailwindcss"
   ],
   "tsdoc": true,
-  "tailwindStylesheet": "./src/styles/globals.css"
+  "tailwindStylesheet": "./src/styles/globals.css",
+  "tailwindFunctions": ["clsx"]
 }

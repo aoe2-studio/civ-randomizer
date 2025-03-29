@@ -1,25 +1,12 @@
 import { CIVS } from '@/constants'
-import { useEnabledCivs, usePlayedCivs } from '@/machines/app'
-import { CivIcon } from './civ-icon'
+import { ContextAwareCivIcon } from './civ-icon'
 
 export const Roster = () => {
-  const enabled = useEnabledCivs()
-  const played = usePlayedCivs()
-
   return (
-    <ul className="not-prose flex min-w-[100%] flex-wrap">
+    <ul className="flex min-w-[100%] flex-wrap gap-1">
       {CIVS.map((civ) => (
         <li key={civ}>
-          <span
-            style={{
-              opacity:
-                !enabled.includes(civ) ? 0.2
-                : played.includes(civ) ? 0.5
-                : 1,
-            }}
-          >
-            <CivIcon civ={civ} />
-          </span>
+          <ContextAwareCivIcon civ={civ} />
         </li>
       ))}
     </ul>
