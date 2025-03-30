@@ -1,5 +1,5 @@
 import { CIVS } from '@/constants'
-import { useAppActorRef, useCiv, useEnabledCivs } from '@/machines/app'
+import { useCiv } from '@/machines/app'
 import { capitalize } from '@/string'
 import type { Civ } from '@/types'
 import { CivIcon } from './civ-icon'
@@ -11,7 +11,7 @@ const CivConfigItem = ({ civ }: { civ: Civ }) => {
     <label className="flex items-center gap-2">
       <input type="checkbox" checked={isEnabled} onChange={toggleEnabled} />
       <span className="flex items-center gap-0.5">
-        <CivIcon civ={civ} size={30} />
+        <CivIcon civ={civ} size="sm" />
         {capitalize(civ)}
       </span>
     </label>
@@ -19,9 +19,6 @@ const CivConfigItem = ({ civ }: { civ: Civ }) => {
 }
 
 export const Configuration = () => {
-  const enabled = useEnabledCivs()
-  const app = useAppActorRef()
-
   return (
     <div className="@container">
       <a id="configuration" />

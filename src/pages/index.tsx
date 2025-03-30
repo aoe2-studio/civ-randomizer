@@ -20,11 +20,11 @@ export default function Home() {
         </header>
 
         <main className="flex flex-col gap-16">
-          <section className="not-prose">
+          <section>
             <Roster />
           </section>
 
-          <section className="not-prose flex flex-col items-center gap-12">
+          <section className="flex flex-col items-center gap-12">
             <CurrentCiv />
             <Randomize />
           </section>

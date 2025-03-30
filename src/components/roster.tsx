@@ -1,4 +1,3 @@
-import { CIV_ICON_SIZE } from '@/constants'
 import { useCiv, useEnabledCivs } from '@/machines/app'
 import type { Civ } from '@/types'
 import { clsx } from 'clsx'
@@ -11,14 +10,14 @@ const RosterItem = ({ civ }: { civ: Civ }) => {
     'opacity-50': isEnabled && hasBeenPlayed,
   })
 
-  return <CivIcon className={className} civ={civ} size={CIV_ICON_SIZE / 2.5} />
+  return <CivIcon className={className} civ={civ} size="md" />
 }
 
 export const Roster = () => {
   const enabledCivs = useEnabledCivs()
 
   return (
-    <ul className="flex min-w-[100%] flex-wrap gap-1 gap-y-2">
+    <ul className="not-prose flex min-w-[100%] flex-wrap gap-1 gap-y-2">
       {enabledCivs.map((civ) => {
         return (
           <li key={civ}>

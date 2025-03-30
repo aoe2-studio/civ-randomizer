@@ -9,7 +9,7 @@ const CurrentCivInner = ({ civ }: { civ: Civ }) => {
   return (
     <div
       onClick={togglePlayed}
-      className="inline-flex h-[120px] w-[120px] flex-col items-center justify-center border-3 border-gray-400 shadow-2xl hover:border-gray-500"
+      className="not-prose inline-flex h-[120px] w-[120px] flex-col items-center justify-center border-3 border-gray-400 shadow-2xl hover:border-gray-500"
     >
       <CivIcon civ={civ} />
       <p>{capitalize(civ)}</p>
