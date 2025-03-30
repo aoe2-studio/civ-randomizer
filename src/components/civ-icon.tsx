@@ -1,4 +1,4 @@
-import { CIV_ICON_SIZE } from '@/constants'
+import { CIV_ICON_SIZE, CIV_ICONS_PATH } from '@/constants'
 import type { Civ } from '@/types'
 import Image from 'next/image'
 
@@ -13,7 +13,7 @@ export const CivIcon = ({
 }) => {
   return (
     <Image
-      src={`/civs/${civ}.png`}
+      src={`${CIV_ICONS_PATH}/${civ}.png`}
       alt={`${civ} icon`}
       width={size}
       height={size}

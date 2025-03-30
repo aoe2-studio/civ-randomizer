@@ -47,3 +47,5 @@ export const CIVS = [
 ] as const
 
 export const CIV_ICON_SIZE = 104
+
+export const CIV_ICONS_PATH = `/aoe2/civs`
