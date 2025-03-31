@@ -1,6 +1,48 @@
-import { useEnabledCivs } from '@/machines/app'
+import { useCiv, useEnabledCivs } from '@/machines/app'
+import type { Civ } from '@/types'
 import { AnimatePresence, motion } from 'motion/react'
 import { CivIcon } from './civ-icon'
+
+const RosterItem = ({ civ }: { civ: Civ }) => {
+  const { hasBeenPlayed } = useCiv(civ)
+  const animate = hasBeenPlayed ? ['visible', 'played'] : ['visible']
+
+  return (
+    <motion.li
+      key={civ}
+      className="relative"
+      layout="position"
+      animate={animate}
+      variants={{
+        hidden: { opacity: 0, scale: 0 },
+        visible: { opacity: 1, scale: 1 },
+        played: { opacity: 0.9, scale: 0.9 },
+        hovered: { scale: 1.1 },
+      }}
+      initial="hidden"
+      exit="hidden"
+      whileHover="hovered"
+    >
+      <AnimatePresence>
+        {hasBeenPlayed ?
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center"
+            variants={{
+              hidden: { opacity: 0, scale: 3 },
+              visible: { opacity: 1, scale: 1 },
+            }}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
+            ✅
+          </motion.div>
+        : null}
+      </AnimatePresence>
+      <CivIcon civ={civ} />
+    </motion.li>
+  )
+}
 
 export const Roster = () => {
   const enabledCivs = useEnabledCivs()
@@ -8,22 +50,12 @@ export const Roster = () => {
   return (
     <motion.ul
       layout
-      className="not-prose flex min-w-[100%] flex-wrap gap-1 gap-y-2"
+      className="not-prose flex min-w-[100%] flex-wrap gap-1 gap-y-2 select-none"
     >
       <AnimatePresence>
-        {enabledCivs.map((civ) => {
-          return (
-            <motion.li
-              key={civ}
-              layout="position"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-            >
-              <CivIcon civ={civ} />
-            </motion.li>
-          )
-        })}
+        {enabledCivs.map((civ) => (
+          <RosterItem key={civ} civ={civ} />
+        ))}
       </AnimatePresence>
     </motion.ul>
   )
