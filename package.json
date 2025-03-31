@@ -7,6 +7,9 @@
   "bugs": "https://github.com/aoe2-studio/civ-randomizer/issues",
   "repository": "https://github.com/aoe2-studio/civ-randomizer.git",
   "readme": "https://github.com/aoe2-studio/civ-randomizer/blob/main/README.md",
+  "keywords": [
+    "aoe2"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
