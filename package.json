@@ -1,6 +1,5 @@
 {
-  "name": "@aoe2-studio/aoe2-random-civ",
-  "version": "0.1.0",
+  "name": "@aoe2-studio/aoe2-civ-randomizer",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
