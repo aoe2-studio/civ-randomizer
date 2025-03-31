@@ -1,6 +1,12 @@
 {
   "name": "@aoe2-studio/aoe2-civ-randomizer",
   "private": true,
+  "author": "with-heart <with.heart+git@pm.me>",
+  "license": "MIT",
+  "description": "A better Random for aoe2",
+  "bugs": "https://github.com/aoe2-studio/aoe2-civ-randomizer/issues",
+  "repository": "https://github.com/aoe2-studio/aoe2-civ-randomizer.git",
+  "readme": "https://github.com/aoe2-studio/aoe2-civ-randomizer/blob/main/README.md",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
