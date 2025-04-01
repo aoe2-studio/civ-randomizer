@@ -2,6 +2,7 @@ import { useCiv, useEnabledCivs } from '@/machines/app'
 import type { Civ } from '@/types'
 import { AnimatePresence, motion } from 'motion/react'
 import { CivIcon } from './civ-icon'
+import { PlayedCheck } from './played-check'
 
 const RosterItem = ({ civ }: { civ: Civ }) => {
   const { hasBeenPlayed } = useCiv(civ)
@@ -14,31 +15,30 @@ const RosterItem = ({ civ }: { civ: Civ }) => {
       layout="position"
       animate={animate}
       variants={{
-        hidden: { opacity: 0, scale: 0 },
-        visible: { opacity: 1, scale: 1 },
+        hidden: {
+          opacity: 0,
+          scale: 0,
+        },
+        visible: {
+          opacity: 1,
+          scale: 1,
+        },
         played: { opacity: 0.9, scale: 0.9 },
         hovered: { scale: 1.1 },
+      }}
+      transition={{
+        ease: 'easeOut',
+        layout: {
+          type: 'spring',
+          visualDuration: 0.2,
+          bounce: 0.2,
+        },
       }}
       initial="hidden"
       exit="hidden"
       whileHover="hovered"
     >
-      <AnimatePresence>
-        {hasBeenPlayed ?
-          <motion.div
-            className="absolute inset-0 flex items-center justify-center"
-            variants={{
-              hidden: { opacity: 0, scale: 3 },
-              visible: { opacity: 1, scale: 1 },
-            }}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-          >
-            ✅
-          </motion.div>
-        : null}
-      </AnimatePresence>
+      <PlayedCheck show={hasBeenPlayed} />
       <CivIcon civ={civ} />
     </motion.li>
   )
