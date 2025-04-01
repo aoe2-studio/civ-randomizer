@@ -6,12 +6,13 @@ import { useCallback } from 'react'
 import {
   assertEvent,
   assign,
+  sendTo,
   setup,
   type EventFrom,
-  type SnapshotFrom,
   type TagsFrom,
 } from 'xstate'
-import { snapshotSaver } from './snapshot-saver'
+import { localStorageMachine } from './local-storage'
+import type { DataLoadedEvent, SyncEvent } from './types'
 
 export type AppContext = {
   currentCiv?: Civ
@@ -20,7 +21,6 @@ export type AppContext = {
 }
 export type AppEvent = EventFrom<typeof appMachine>
 export type AppTags = TagsFrom<typeof appMachine>
-export type AppSnapshot = SnapshotFrom<typeof appMachine>
 
 export const appMachine = setup({
   types: {
@@ -34,21 +34,20 @@ export const appMachine = setup({
       | { type: 'civ.disable'; civ: Civ }
       | { type: 'civ.play'; civ: Civ }
       | { type: 'civ.unplay'; civ: Civ }
-      | { type: 'randomize' },
+      | { type: 'randomize' }
+      | DataLoadedEvent,
     tags: {} as 'randomizable',
   },
   actions: {
     disableCiv: assign({
       enabled: ({ context, event }) => {
         assertEvent(event, 'civ.disable')
-        console.log('disableCiv')
         return context.enabled.filter((civ) => civ !== event.civ)
       },
     }),
     enableCiv: assign({
       enabled: ({ context, event }) => {
         assertEvent(event, 'civ.enable')
-        console.log('enableCiv')
         return [...context.enabled, event.civ].sort()
       },
     }),
@@ -76,6 +75,14 @@ export const appMachine = setup({
     resetPlayedCivs: assign({
       played: () => [],
     }),
+    storeLoadedData: assign(({ context, event }) => {
+      assertEvent(event, 'data.loaded')
+      return event.data ?? context
+    }),
+    sync: sendTo(
+      'storage',
+      ({ context }) => ({ type: 'sync', data: context }) satisfies SyncEvent,
+    ),
     unplayCiv: assign({
       played: ({ context, event }) => {
         assertEvent(event, 'civ.unplay')
@@ -104,7 +111,7 @@ export const appMachine = setup({
     hasAtLeast2CivsEnabled: ({ context }) => context.enabled.length > 1,
   },
   actors: {
-    snapshotSaver,
+    storage: localStorageMachine,
   },
 }).createMachine({
   context: {
@@ -114,19 +121,26 @@ export const appMachine = setup({
   initial: 'indeterminate',
   on: {
     'civ.enable': {
-      actions: ['enableCiv'],
+      actions: ['enableCiv', 'sync'],
       target: '.indeterminate',
     },
     'civ.disable': {
-      actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled'],
+      actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled', 'sync'],
       target: '.indeterminate',
     },
     'civ.play': {
-      actions: ['playCiv'],
+      actions: ['playCiv', 'sync'],
     },
     'civ.unplay': {
-      actions: ['unplayCiv'],
+      actions: ['unplayCiv', 'sync'],
     },
+    'data.loaded': {
+      actions: 'storeLoadedData',
+    },
+  },
+  invoke: {
+    src: 'storage',
+    id: 'storage',
   },
   states: {
     indeterminate: {
@@ -146,10 +160,10 @@ export const appMachine = setup({
         randomize: [
           {
             guard: 'allCivsPlayed',
-            actions: ['resetPlayedCivs', 'randomize'],
+            actions: ['resetPlayedCivs', 'randomize', 'sync'],
           },
           {
-            actions: ['randomize'],
+            actions: ['randomize', 'sync'],
           },
         ],
       },
