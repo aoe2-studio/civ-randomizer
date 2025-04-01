@@ -16,16 +16,6 @@ export type AppContext = ContextFrom<typeof appMachine>
 export type AppEvent = EventFrom<typeof appMachine>
 export type AppTags = TagsFrom<typeof appMachine>
 
-export type CivEnableEvent = { type: 'civ.enable'; civ: Civ }
-export type CivDisableEvent = { type: 'civ.disable'; civ: Civ }
-export type CivPlayEvent = { type: 'civ.play'; civ: Civ }
-export type CivUnplayEvent = { type: 'civ.unplay'; civ: Civ }
-export type CivEvent =
-  | CivEnableEvent
-  | CivDisableEvent
-  | CivPlayEvent
-  | CivUnplayEvent
-
 export const appMachine = setup({
   types: {
     context: {} as {
@@ -33,7 +23,12 @@ export const appMachine = setup({
       enabled: Civ[]
       played: Civ[]
     },
-    events: {} as CivEvent | { type: 'randomize' },
+    events: {} as
+      | { type: 'civ.enable'; civ: Civ }
+      | { type: 'civ.disable'; civ: Civ }
+      | { type: 'civ.play'; civ: Civ }
+      | { type: 'civ.unplay'; civ: Civ }
+      | { type: 'randomize' },
     tags: {} as 'randomizable',
   },
   actions: {
