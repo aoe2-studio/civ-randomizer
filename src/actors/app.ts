@@ -6,13 +6,10 @@ import { useCallback } from 'react'
 import {
   assertEvent,
   assign,
-  sendTo,
   setup,
   type EventFrom,
   type TagsFrom,
 } from 'xstate'
-import { localStorageMachine } from './local-storage'
-import type { DataLoadedEvent, SyncEvent } from './types'
 
 export type AppContext = {
   currentCiv?: Civ
@@ -21,6 +18,11 @@ export type AppContext = {
 }
 export type AppEvent = EventFrom<typeof appMachine>
 export type AppTags = TagsFrom<typeof appMachine>
+
+const defaultContext: AppContext = {
+  enabled: [...CIVS],
+  played: [],
+}
 
 export const appMachine = setup({
   types: {
@@ -34,8 +36,10 @@ export const appMachine = setup({
       | { type: 'civ.disable'; civ: Civ }
       | { type: 'civ.play'; civ: Civ }
       | { type: 'civ.unplay'; civ: Civ }
-      | { type: 'randomize' }
-      | DataLoadedEvent,
+      | { type: 'randomize' },
+    input: {} as {
+      context?: AppContext
+    },
     tags: {} as 'randomizable',
   },
   actions: {
@@ -75,14 +79,9 @@ export const appMachine = setup({
     resetPlayedCivs: assign({
       played: () => [],
     }),
-    storeLoadedData: assign(({ context, event }) => {
-      assertEvent(event, 'data.loaded')
-      return event.data ?? context
-    }),
-    sync: sendTo(
-      'storage',
-      ({ context }) => ({ type: 'sync', data: context }) satisfies SyncEvent,
-    ),
+    saveToLocalStorage: ({ context }) => {
+      localStorage.setItem('data', JSON.stringify(context))
+    },
     unplayCiv: assign({
       played: ({ context, event }) => {
         assertEvent(event, 'civ.unplay')
@@ -110,48 +109,42 @@ export const appMachine = setup({
     },
     hasAtLeast2CivsEnabled: ({ context }) => context.enabled.length > 1,
   },
-  actors: {
-    storage: localStorageMachine,
-  },
 }).createMachine({
-  context: {
-    enabled: [...CIVS],
-    played: [],
-  },
+  context: ({ input }) => ({
+    ...defaultContext,
+    ...input.context,
+  }),
   initial: 'indeterminate',
   on: {
     'civ.enable': {
-      actions: ['enableCiv', 'sync'],
-      target: '.indeterminate',
+      actions: 'enableCiv',
+      target: '.saving',
     },
     'civ.disable': {
-      actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled', 'sync'],
-      target: '.indeterminate',
+      actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled'],
+      target: '.saving',
     },
     'civ.play': {
-      actions: ['playCiv', 'sync'],
+      actions: 'playCiv',
+      target: '.saving',
     },
     'civ.unplay': {
-      actions: ['unplayCiv', 'sync'],
+      actions: 'unplayCiv',
+      target: '.saving',
     },
-    'data.loaded': {
-      actions: 'storeLoadedData',
-    },
-  },
-  invoke: {
-    src: 'storage',
-    id: 'storage',
   },
   states: {
+    saving: {
+      entry: 'saveToLocalStorage',
+      always: 'indeterminate',
+    },
     indeterminate: {
       always: [
         {
           guard: 'hasAtLeast2CivsEnabled',
           target: 'valid',
         },
-        {
-          target: 'invalid',
-        },
+        'invalid',
       ],
     },
     valid: {
@@ -160,10 +153,12 @@ export const appMachine = setup({
         randomize: [
           {
             guard: 'allCivsPlayed',
-            actions: ['resetPlayedCivs', 'randomize', 'sync'],
+            actions: ['resetPlayedCivs', 'randomize'],
+            target: 'saving',
           },
           {
-            actions: ['randomize', 'sync'],
+            actions: 'randomize',
+            target: 'saving',
           },
         ],
       },
