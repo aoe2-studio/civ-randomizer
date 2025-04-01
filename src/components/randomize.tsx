@@ -1,4 +1,4 @@
-import { useAppActorRef, useIsRandomizable } from '@/machines/app'
+import { useAppActorRef, useIsRandomizable } from '@/actors/app'
 
 export const Randomize = () => {
   const app = useAppActorRef()

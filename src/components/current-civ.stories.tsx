@@ -1,4 +1,4 @@
-import { useAppActorRef } from '@/machines/app'
+import { useAppActorRef } from '@/actors/app'
 import type { Meta, StoryObj } from '@storybook/react'
 import { useEffect } from 'react'
 import { CurrentCiv } from './current-civ'

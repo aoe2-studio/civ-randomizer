@@ -1,4 +1,4 @@
-import { useCiv, useEnabledCivs } from '@/machines/app'
+import { useCiv, useEnabledCivs } from '@/actors/app'
 import type { Civ } from '@/types'
 import { AnimatePresence, motion } from 'motion/react'
 import { CivIcon } from './civ-icon'

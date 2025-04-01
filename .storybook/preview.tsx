@@ -1,4 +1,4 @@
-import { AppProvider } from '@/machines/app'
+import { AppProvider } from '@/actors/app'
 import type { Preview } from '@storybook/react'
 import { Inter } from 'next/font/google'
 import '../src/styles/globals.css'

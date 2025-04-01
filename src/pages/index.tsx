@@ -1,8 +1,8 @@
+import { AppProvider } from '@/actors/app'
 import { Configuration } from '@/components/configuration'
 import { CurrentCiv } from '@/components/current-civ'
 import { Randomize } from '@/components/randomize'
 import { Roster } from '@/components/roster'
-import { AppProvider } from '@/machines/app'
 import { MotionConfig } from 'motion/react'
 import { Inter } from 'next/font/google'
 

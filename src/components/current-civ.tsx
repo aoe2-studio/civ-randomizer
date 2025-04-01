@@ -1,4 +1,4 @@
-import { useCiv, useCurrentCiv } from '@/machines/app'
+import { useCiv, useCurrentCiv } from '@/actors/app'
 import { capitalize } from '@/string'
 import type { Civ } from '@/types'
 import { AnimatePresence, motion } from 'motion/react'

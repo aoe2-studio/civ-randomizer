@@ -1,5 +1,5 @@
+import { useCiv } from '@/actors/app'
 import { CIVS } from '@/constants'
-import { useCiv } from '@/machines/app'
 import { capitalize } from '@/string'
 import type { Civ } from '@/types'
 import { CivIcon } from './civ-icon'
