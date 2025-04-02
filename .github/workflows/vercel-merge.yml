@@ -26,17 +26,32 @@ jobs:
       - name: 'Install dependencies'
         run: 'pnpm install'
 
+      - name: 'Install vercel'
+        run: 'pnpm install vercel --global'
+
       - name: 'Build project'
         run: 'pnpm build'
 
-      - run: 'ls -la'
+      - name: Deploy to Vercel
+        id: vercel_deploy
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            DEPLOY_URL=$(vercel deploy \
+              --token ${{ secrets.VERCEL_TOKEN }} \
+              --org ${{ secrets.VERCEL_ORG_ID }} \
+              --project ${{ secrets.VERCEL_PROJECT_ID }} \
+              --scope ${{ secrets.VERCEL_ORG_ID }} \
+              --prod \
+              --yes \
+              --prebuilt)
+          else
+            DEPLOY_URL=$(vercel deploy \
+              --token ${{ secrets.VERCEL_TOKEN }} \
+              --org ${{ secrets.VERCEL_ORG_ID }} \
+              --project ${{ secrets.VERCEL_PROJECT_ID }} \
+              --scope ${{ secrets.VERCEL_ORG_ID }} \
+              --yes \
+              --prebuilt)
+          fi
 
-      - name: 'Deploy to Vercel (prod)'
-        uses: 'amondnet/vercel-action@v25'
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-          scope: ${{ secrets.VERCEL_ORG_ID}}
-          working-directory: '.'
+          echo "preview-url=$DEPLOY_URL" >> $GITHUB_OUTPUT
