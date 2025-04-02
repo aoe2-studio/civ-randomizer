@@ -55,14 +55,12 @@ jobs:
               --token ${{ secrets.VERCEL_TOKEN }} \
               --scope ${{ secrets.VERCEL_ORG_ID }} \
               --prod \
-              --yes \
-              --prebuilt)
+              --yes)
           else
             DEPLOY_URL=$(vercel deploy \
               --token ${{ secrets.VERCEL_TOKEN }} \
               --scope ${{ secrets.VERCEL_ORG_ID }} \
-              --yes \
-              --prebuilt)
+              --yes)
           fi
 
           echo "preview-url=$DEPLOY_URL" >> $GITHUB_OUTPUT
