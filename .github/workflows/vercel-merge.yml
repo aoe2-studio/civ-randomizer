@@ -29,6 +29,8 @@ jobs:
       - name: 'Build project'
         run: 'pnpm build'
 
+      - run: 'ls -la'
+
       - name: 'Deploy to Vercel (prod)'
         uses: 'amondnet/vercel-action@v25'
         with:
