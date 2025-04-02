@@ -7,14 +7,22 @@ import {
   assertEvent,
   assign,
   setup,
-  type ContextFrom,
   type EventFrom,
   type TagsFrom,
 } from 'xstate'
 
-export type AppContext = ContextFrom<typeof appMachine>
+export type AppContext = {
+  currentCiv?: Civ
+  enabled: Civ[]
+  played: Civ[]
+}
 export type AppEvent = EventFrom<typeof appMachine>
 export type AppTags = TagsFrom<typeof appMachine>
+
+const defaultContext: AppContext = {
+  enabled: [...CIVS],
+  played: [],
+}
 
 export const appMachine = setup({
   types: {
@@ -44,6 +52,17 @@ export const appMachine = setup({
         return [...context.enabled, event.civ].sort()
       },
     }),
+    loadFromLocalStorage: assign(() => {
+      const data = localStorage.getItem('data')
+
+      try {
+        if (!data) return defaultContext
+        return { ...defaultContext, ...JSON.parse(data) }
+      } catch (e) {
+        console.error('Failed to parse localStorage data:', e)
+        return defaultContext
+      }
+    }),
     playCiv: assign({
       played: ({ context, event }) => {
         assertEvent(event, 'civ.play')
@@ -68,6 +87,9 @@ export const appMachine = setup({
     resetPlayedCivs: assign({
       played: () => [],
     }),
+    saveToLocalStorage: ({ context }) => {
+      localStorage.setItem('data', JSON.stringify(context))
+    },
     unplayCiv: assign({
       played: ({ context, event }) => {
         assertEvent(event, 'civ.unplay')
@@ -97,36 +119,44 @@ export const appMachine = setup({
   },
 }).createMachine({
   context: {
-    enabled: [...CIVS],
+    enabled: [],
     played: [],
   },
-  initial: 'indeterminate',
+  initial: 'loading',
   on: {
     'civ.enable': {
       actions: 'enableCiv',
-      target: '.indeterminate',
+      target: '.saving',
     },
     'civ.disable': {
       actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled'],
-      target: '.indeterminate',
+      target: '.saving',
     },
     'civ.play': {
       actions: 'playCiv',
+      target: '.saving',
     },
     'civ.unplay': {
       actions: 'unplayCiv',
+      target: '.saving',
     },
   },
   states: {
+    loading: {
+      entry: 'loadFromLocalStorage',
+      always: 'indeterminate',
+    },
+    saving: {
+      entry: 'saveToLocalStorage',
+      always: 'indeterminate',
+    },
     indeterminate: {
       always: [
         {
           guard: 'hasAtLeast2CivsEnabled',
           target: 'valid',
         },
-        {
-          target: 'invalid',
-        },
+        'invalid',
       ],
     },
     valid: {
@@ -136,9 +166,11 @@ export const appMachine = setup({
           {
             guard: 'allCivsPlayed',
             actions: ['resetPlayedCivs', 'randomize'],
+            target: 'saving',
           },
           {
             actions: 'randomize',
+            target: 'saving',
           },
         ],
       },
