@@ -11,34 +11,8 @@ jobs:
       - name: 'Checkout'
         uses: 'actions/checkout@v4'
 
-      - name: 'Install pnpm'
-        uses: 'pnpm/action-setup@v4'
-        with:
-          version: '10'
-          run_install: false
-
-      - name: 'Install Node.js'
-        uses: 'actions/setup-node@v4'
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - name: 'Install dependencies'
-        run: 'pnpm install'
-
       - name: 'Install vercel'
-        run: 'pnpm install vercel --global'
-
-      - name: 'Cache Next.js build cache'
-        uses: 'actions/cache@v4'
-        with:
-          path: '.next/cache'
-          key: "nextjs-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}"
-          restore-keys: |
-            nextjs-${{ runner.os }}
-
-      - name: 'Build project'
-        run: 'pnpm build'
+        run: 'npm install -g vercel'
 
       - name: 'Link Vercel project'
         run: |
@@ -48,19 +22,16 @@ jobs:
             --yes
 
       - name: Deploy to Vercel
-        id: vercel_deploy
+        id: 'vercel-deploy'
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            DEPLOY_URL=$(vercel deploy \
-              --token ${{ secrets.VERCEL_TOKEN }} \
-              --scope ${{ secrets.VERCEL_ORG_ID }} \
-              --prod \
-              --yes)
-          else
-            DEPLOY_URL=$(vercel deploy \
-              --token ${{ secrets.VERCEL_TOKEN }} \
-              --scope ${{ secrets.VERCEL_ORG_ID }} \
-              --yes)
-          fi
+          DEPLOY_URL=$(vercel deploy \
+            --token ${{ secrets.VERCEL_TOKEN}} \
+            --scope ${{ secrets.VERCEL_ORG_ID}} \
+            --prod \
+            --yes)
 
           echo "preview-url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+
+      - name: 'preview-url'
+        run: |
+          echo ${{ steps.vercel-deploy.outputs.preview-url }}
