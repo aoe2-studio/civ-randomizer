@@ -37,8 +37,6 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           scope: ${{ secrets.VERCEL_ORG_ID}}
-          alias-domains: |
-            pr-{{PR_NUMBER}}.randomizer.aoe2.studio
 
       - name: 'preview-url'
         run: |
