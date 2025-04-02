@@ -37,9 +37,6 @@ export const appMachine = setup({
       | { type: 'civ.play'; civ: Civ }
       | { type: 'civ.unplay'; civ: Civ }
       | { type: 'randomize' },
-    input: {} as {
-      context?: AppContext
-    },
     tags: {} as 'randomizable',
   },
   actions: {
@@ -54,6 +51,17 @@ export const appMachine = setup({
         assertEvent(event, 'civ.enable')
         return [...context.enabled, event.civ].sort()
       },
+    }),
+    loadFromLocalStorage: assign(() => {
+      const data = localStorage.getItem('data')
+
+      try {
+        if (!data) return defaultContext
+        return { ...defaultContext, ...JSON.parse(data) }
+      } catch (e) {
+        console.error('Failed to parse localStorage data:', e)
+        return defaultContext
+      }
     }),
     playCiv: assign({
       played: ({ context, event }) => {
@@ -110,11 +118,11 @@ export const appMachine = setup({
     hasAtLeast2CivsEnabled: ({ context }) => context.enabled.length > 1,
   },
 }).createMachine({
-  context: ({ input }) => ({
-    ...defaultContext,
-    ...input.context,
-  }),
-  initial: 'indeterminate',
+  context: {
+    enabled: [],
+    played: [],
+  },
+  initial: 'loading',
   on: {
     'civ.enable': {
       actions: 'enableCiv',
@@ -134,6 +142,10 @@ export const appMachine = setup({
     },
   },
   states: {
+    loading: {
+      entry: 'loadFromLocalStorage',
+      always: 'indeterminate',
+    },
     saving: {
       entry: 'saveToLocalStorage',
       always: 'indeterminate',

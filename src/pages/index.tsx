@@ -1,12 +1,11 @@
-import { AppProvider, type AppContext } from '@/actors/app'
-import { localStorageLoader } from '@/actors/local-storage-loader'
+import { AppProvider } from '@/actors/app'
 import { Configuration } from '@/components/configuration'
 import { CurrentCiv } from '@/components/current-civ'
 import { Randomize } from '@/components/randomize'
 import { Roster } from '@/components/roster'
-import { useActor } from '@xstate/react'
 import { MotionConfig } from 'motion/react'
 import { Inter } from 'next/font/google'
+import { useEffect, useState } from 'react'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,15 +23,9 @@ const Container = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const App = ({ context }: { context: AppContext | undefined }) => {
+const App = () => {
   return (
-    <AppProvider
-      options={{
-        input: {
-          context,
-        },
-      }}
-    >
+    <AppProvider>
       <header>
         <h1>aoe2 civ randomizer</h1>
       </header>
@@ -56,19 +49,15 @@ const App = ({ context }: { context: AppContext | undefined }) => {
 }
 
 export default function Home() {
-  const [loader] = useActor(localStorageLoader)
+  const [isClient, setIsClient] = useState(false)
 
-  if (loader.status === 'error') {
-    throw loader.error
-  }
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
-  if (loader.status === 'done') {
-    return (
+  return isClient ?
       <Container>
-        <App context={loader.output} />
+        <App />
       </Container>
-    )
-  }
-
-  return <Container>Loading...</Container>
+    : <Container>Loading...</Container>
 }
