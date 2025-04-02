@@ -40,13 +40,19 @@ jobs:
       - name: 'Build project'
         run: 'pnpm build'
 
+      - name: 'Link Vercel project'
+        run: |
+          vercel link \
+            --token ${{ secrets.VERCEL_TOKEN }} \
+            --scope ${{ secrets.VERCEL_ORG_ID }} \
+            --yes
+
       - name: Deploy to Vercel
         id: vercel_deploy
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             DEPLOY_URL=$(vercel deploy \
               --token ${{ secrets.VERCEL_TOKEN }} \
-              --project ${{ secrets.VERCEL_PROJECT_ID }} \
               --scope ${{ secrets.VERCEL_ORG_ID }} \
               --prod \
               --yes \
@@ -54,7 +60,6 @@ jobs:
           else
             DEPLOY_URL=$(vercel deploy \
               --token ${{ secrets.VERCEL_TOKEN }} \
-              --project ${{ secrets.VERCEL_PROJECT_ID }} \
               --scope ${{ secrets.VERCEL_ORG_ID }} \
               --yes \
               --prebuilt)
