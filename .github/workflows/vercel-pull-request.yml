@@ -36,4 +36,4 @@ jobs:
         uses: 'marocchino/sticky-pull-request-comment@v2'
         with:
           message: |
-            🚀 Preview Deployment: ${{ steps.vercel_deploy.outputs.preview-url }}
+            🚀 Preview Deployment: ${{ steps.vercel-deploy.outputs.preview-url }}
