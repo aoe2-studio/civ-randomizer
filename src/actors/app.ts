@@ -74,6 +74,7 @@ export const appMachine = setup({
         const unplayedCivs = context.enabled.filter(
           (civ) => !context.played.includes(civ),
         )
+        if (unplayedCivs.length === 1) return unplayedCivs[0]
 
         // prevent next civ from being the same as the current civ
         let nextCiv
