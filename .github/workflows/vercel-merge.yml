@@ -46,7 +46,6 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             DEPLOY_URL=$(vercel deploy \
               --token ${{ secrets.VERCEL_TOKEN }} \
-              --org ${{ secrets.VERCEL_ORG_ID }} \
               --project ${{ secrets.VERCEL_PROJECT_ID }} \
               --scope ${{ secrets.VERCEL_ORG_ID }} \
               --prod \
@@ -55,7 +54,6 @@ jobs:
           else
             DEPLOY_URL=$(vercel deploy \
               --token ${{ secrets.VERCEL_TOKEN }} \
-              --org ${{ secrets.VERCEL_ORG_ID }} \
               --project ${{ secrets.VERCEL_PROJECT_ID }} \
               --scope ${{ secrets.VERCEL_ORG_ID }} \
               --yes \
