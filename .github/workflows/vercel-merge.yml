@@ -29,9 +29,3 @@ jobs:
             --scope ${{ secrets.VERCEL_ORG_ID}} \
             --prod \
             --yes)
-
-          echo "preview-url=$DEPLOY_URL" >> $GITHUB_OUTPUT
-
-      - name: 'preview-url'
-        run: |
-          echo ${{ steps.vercel-deploy.outputs.preview-url }}
