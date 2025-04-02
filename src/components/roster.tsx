@@ -5,13 +5,13 @@ import { CivIcon } from './civ-icon'
 import { PlayedCheck } from './played-check'
 
 const RosterItem = ({ civ }: { civ: Civ }) => {
-  const { hasBeenPlayed } = useCiv(civ)
+  const { hasBeenPlayed, togglePlayed } = useCiv(civ)
   const animate = hasBeenPlayed ? ['visible', 'played'] : ['visible']
 
   return (
     <motion.li
       key={civ}
-      className="relative"
+      className="relative cursor-pointer"
       layout="position"
       animate={animate}
       variants={{
@@ -37,6 +37,7 @@ const RosterItem = ({ civ }: { civ: Civ }) => {
       initial="hidden"
       exit="hidden"
       whileHover="hovered"
+      onClick={togglePlayed}
     >
       <PlayedCheck show={hasBeenPlayed} />
       <CivIcon civ={civ} />
