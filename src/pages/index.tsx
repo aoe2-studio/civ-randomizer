@@ -28,13 +28,14 @@ export default function Home() {
       </Head>
       <MotionConfig reducedMotion="user">
         <div className={`${inter.className} app`}>
-          <div className="page">
-            {isClient ?
-              <AppProvider>
-                <App />
-              </AppProvider>
-            : <>Loading...</>}
-          </div>
+          {isClient ?
+            <AppProvider>
+              <App />
+            </AppProvider>
+          : <div className="page">
+              <p>Loading...</p>
+            </div>
+          }
         </div>
       </MotionConfig>
     </>

@@ -1,29 +1,49 @@
 import { useAppActorRef, useIsRandomizable } from '@/actors/app'
+import type { ReactNode } from 'react'
 import { CurrentCiv } from './current-civ'
 import { Roster } from './roster'
 
-const Controls = () => {
+const RandomizeButton = ({ children }: { children: ReactNode }) => {
   const app = useAppActorRef()
   const isRandomizable = useIsRandomizable()
   const onRandomize = () => app.send({ type: 'randomize' })
+
+  return (
+    <button onClick={onRandomize} disabled={!isRandomizable}>
+      {children}
+    </button>
+  )
+}
+
+const ConfigurationButton = ({ children }: { children: ReactNode }) => {
+  const app = useAppActorRef()
+  const onConfiguration = () => app.send({ type: 'configuration.open' })
+
+  return <button onClick={onConfiguration}>{children}</button>
+}
+
+const Buttons = () => {
+  const app = useAppActorRef()
+  const isRandomizable = useIsRandomizable()
   const onConfiguration = () => app.send({ type: 'configuration.open' })
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="flex items-center gap-3">
-        <button onClick={onRandomize} disabled={!isRandomizable}>
-          Randomize Civ
-        </button>
-        <button onClick={onConfiguration} className="text-3xl">
-          <span role="img" aria-hidden>
+    <div className="buttons-container">
+      <div className="buttons">
+        <RandomizeButton>Randomize Civ</RandomizeButton>
+        <ConfigurationButton>
+          <span role="img" aria-hidden className="text-3xl">
             ⚙️
           </span>
-        </button>
+        </ConfigurationButton>
       </div>
       {!isRandomizable && (
         <p>
           You need to enable <em>at least</em> two civs in{' '}
-          <a onClick={onConfiguration}>Configuration</a> to randomize!
+          <button onClick={onConfiguration} className="link">
+            Configuration
+          </button>{' '}
+          to randomize!
         </p>
       )}
     </div>
@@ -32,18 +52,18 @@ const Controls = () => {
 
 export const Randomizing = () => {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="page randomizing">
       <header className="prose dark:prose-invert">
-        <h1>aoe2 civ randomizer</h1>
+        <h1>civ randomizer</h1>
       </header>
 
-      <section>
+      <section className="roster">
         <Roster />
       </section>
 
-      <section className="self-center">
+      <section className="controls">
         <CurrentCiv />
-        <Controls />
+        <Buttons />
       </section>
     </div>
   )

@@ -42,14 +42,16 @@ export const Configuring = () => {
   const app = useAppActorRef()
 
   return (
-    <div className="prose dark:prose-invert">
-      <button
-        className="absolute top-4 right-4"
-        onClick={() => app.send({ type: 'configuration.close' })}
-      >
-        ❌
-      </button>
-      <Configuration />
+    <div className="page">
+      <div className="prose dark:prose-invert">
+        <button
+          className="absolute top-4 right-4"
+          onClick={() => app.send({ type: 'configuration.close' })}
+        >
+          ❌
+        </button>
+        <Configuration />
+      </div>
     </div>
   )
 }

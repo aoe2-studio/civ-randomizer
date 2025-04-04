@@ -9,16 +9,16 @@ const CurrentCivInner = ({ civ }: { civ: Civ }) => {
   const { hasBeenPlayed, togglePlayed } = useCiv(civ)
 
   return (
-    <motion.div
+    <motion.button
       onClick={togglePlayed}
-      className="not-prose relative inline-flex h-[200px] w-[200px] cursor-pointer flex-col items-center justify-center gap-3 overflow-hidden border-3 border-gray-400 text-2xl shadow-2xl select-none hover:border-gray-500"
+      className="current-civ invert-color not-prose relative select-none"
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
       <AnimatePresence initial={false}>
         <motion.div
           key={civ}
-          className="absolute flex h-full w-full flex-col items-center justify-center gap-2"
+          className="content"
           initial={{ x: 400 }}
           animate={{ x: 0 }}
           exit={{ x: -400 }}
@@ -28,14 +28,14 @@ const CurrentCivInner = ({ civ }: { civ: Civ }) => {
             bounce: 0.15,
           }}
         >
-          <div className="relative cursor-pointer select-none">
+          <div className="relative">
             <PlayedCheck show={hasBeenPlayed} />
             <CivIcon civ={civ} size="lg" />
           </div>
           <p>{capitalize(civ)}</p>
         </motion.div>
       </AnimatePresence>
-    </motion.div>
+    </motion.button>
   )
 }
 

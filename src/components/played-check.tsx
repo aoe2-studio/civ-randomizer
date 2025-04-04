@@ -5,7 +5,7 @@ export const PlayedCheck = ({ show }: { show: boolean }) => {
     <AnimatePresence>
       {show ?
         <motion.div
-          className="absolute inset-0 flex items-center justify-center"
+          className="played-check"
           variants={{
             hidden: { opacity: 0, scale: 3 },
             played: { opacity: 1, scale: 1 },

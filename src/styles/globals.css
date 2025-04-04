@@ -3,20 +3,13 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-gray-50);
+  --foreground: var(--color-gray-950);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body,
@@ -27,28 +20,74 @@ body,
 }
 
 @layer components {
-  button {
+  .invert-color {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .link {
+    @apply cursor-pointer font-semibold underline;
+    @apply invert;
+
+    @variant hover {
+      @apply decoration-2;
+    }
+  }
+
+  .button {
     @apply rounded border border-gray-500 p-3 py-2 hover:border-gray-600 active:border-gray-700 disabled:border-gray-300 disabled:text-gray-400;
 
     @variant disabled {
       @apply cursor-not-allowed;
     }
   }
-
-  a {
-    @apply underline;
-  }
-
   .app {
     background: var(--background);
     color: var(--foreground);
 
-    @apply flex min-h-screen min-w-screen items-center justify-center;
+    @apply grid min-h-screen min-w-screen place-items-center;
   }
 
   .page {
-    background: var(--background);
-
     @apply w-full max-w-6xl p-8 pb-20 sm:p-20;
+  }
+
+  .randomizing {
+    grid-template:
+      'header' auto
+      'controls' 1fr
+      'roster' auto / 1fr;
+    @apply grid place-items-center gap-16;
+
+    & > header {
+      grid-area: header;
+    }
+    & > .controls {
+      grid-area: controls;
+      @apply grid place-items-center gap-4;
+    }
+    & > .roster {
+      grid-area: roster;
+    }
+
+    .buttons-container {
+      @apply flex flex-col items-center gap-4;
+    }
+
+    .buttons {
+      @apply flex items-center gap-3;
+    }
+  }
+
+  .current-civ {
+    @apply grid h-[200px] w-[200px] place-items-center gap-3 overflow-hidden text-2xl shadow-2xl;
+
+    .content {
+      @apply absolute grid h-full w-full place-items-center content-center gap-2;
+    }
+  }
+
+  .played-check {
+    @apply absolute inset-0 grid place-items-center;
   }
 }
