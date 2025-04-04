@@ -1,6 +1,5 @@
 import { AppProvider, useAppSelector } from '@/actors/app'
 import { Configuring } from '@/components/configuring'
-import { PageLayout } from '@/components/page-layout'
 import { Randomizing } from '@/components/randomizing'
 import { useIsClient } from '@/hooks'
 import { MotionConfig } from 'motion/react'
@@ -12,22 +11,11 @@ const inter = Inter({
 })
 
 const App = () => {
-  const isInConfiguringState = useAppSelector((snapshot) =>
-    snapshot.matches('configuring'),
+  const isInRandomizingState = useAppSelector((snapshot) =>
+    snapshot.matches('randomizing'),
   )
 
-  return (
-    <>
-      <header>
-        <h1>aoe2 civ randomizer</h1>
-      </header>
-
-      <main className="flex flex-col gap-16">
-        <Randomizing />
-        {isInConfiguringState && <Configuring />}
-      </main>
-    </>
-  )
+  return isInRandomizingState ? <Randomizing /> : <Configuring />
 }
 
 export default function Home() {
@@ -39,13 +27,15 @@ export default function Home() {
         <title>aoe2 civ randomizer</title>
       </Head>
       <MotionConfig reducedMotion="user">
-        <PageLayout className={inter.className}>
-          {isClient ?
-            <AppProvider>
-              <App />
-            </AppProvider>
-          : <>Loading...</>}
-        </PageLayout>
+        <div className={`${inter.className} app`}>
+          <div className="page">
+            {isClient ?
+              <AppProvider>
+                <App />
+              </AppProvider>
+            : <>Loading...</>}
+          </div>
+        </div>
       </MotionConfig>
     </>
   )

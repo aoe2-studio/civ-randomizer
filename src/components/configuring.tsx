@@ -3,7 +3,6 @@ import { CIVS } from '@/constants'
 import { capitalize } from '@/string'
 import type { Civ } from '@/types'
 import { CivIcon } from './civ-icon'
-import { PageLayout } from './page-layout'
 
 const CivConfigItem = ({ civ }: { civ: Civ }) => {
   const { isEnabled, toggleEnabled } = useCiv(civ)
@@ -21,7 +20,7 @@ const CivConfigItem = ({ civ }: { civ: Civ }) => {
 
 const Configuration = () => {
   return (
-    <div className="@container relative">
+    <div className="@container">
       <h1>Configuration</h1>
       <p className="lead">
         Choose which civilizations you want to play with. Civs will be chosen at
@@ -43,16 +42,14 @@ export const Configuring = () => {
   const app = useAppActorRef()
 
   return (
-    <div className="absolute inset-0 z-10">
+    <div className="prose dark:prose-invert">
       <button
         className="absolute top-4 right-4"
         onClick={() => app.send({ type: 'configuration.close' })}
       >
         ❌
       </button>
-      <PageLayout>
-        <Configuration />
-      </PageLayout>
+      <Configuration />
     </div>
   )
 }

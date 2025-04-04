@@ -34,7 +34,7 @@ const RosterItem = ({ civ }: { civ: Civ }) => {
           bounce: 0.2,
         },
       }}
-      initial="hidden"
+      initial={false}
       exit="hidden"
       whileHover="hovered"
       onClick={togglePlayed}
@@ -49,10 +49,7 @@ export const Roster = () => {
   const enabledCivs = useEnabledCivs()
 
   return (
-    <motion.ul
-      layout
-      className="not-prose flex min-w-[100%] flex-wrap gap-1 gap-y-2 select-none"
-    >
+    <motion.ul className="not-prose flex min-w-[100%] flex-wrap gap-1 gap-y-2 select-none">
       <AnimatePresence>
         {enabledCivs.map((civ) => (
           <RosterItem key={civ} civ={civ} />

@@ -9,7 +9,7 @@ const Controls = () => {
   const onConfiguration = () => app.send({ type: 'configuration.open' })
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-4">
       <div className="flex items-center gap-3">
         <button onClick={onRandomize} disabled={!isRandomizable}>
           Randomize Civ
@@ -32,15 +32,19 @@ const Controls = () => {
 
 export const Randomizing = () => {
   return (
-    <>
+    <div className="flex flex-col gap-6">
+      <header className="prose dark:prose-invert">
+        <h1>aoe2 civ randomizer</h1>
+      </header>
+
       <section>
         <Roster />
       </section>
 
-      <section className="flex flex-col items-center gap-12">
+      <section className="self-center">
         <CurrentCiv />
         <Controls />
       </section>
-    </>
+    </div>
   )
 }

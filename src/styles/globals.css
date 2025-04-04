@@ -38,4 +38,17 @@ body,
   a {
     @apply underline;
   }
+
+  .app {
+    background: var(--background);
+    color: var(--foreground);
+
+    @apply flex min-h-screen min-w-screen items-center justify-center;
+  }
+
+  .page {
+    background: var(--background);
+
+    @apply w-full max-w-6xl p-8 pb-20 sm:p-20;
+  }
 }
