@@ -32,7 +32,7 @@ export default function Home() {
             <AppProvider>
               <App />
             </AppProvider>
-          : <div className="page">
+          : <div className="page place-items-center">
               <p>Loading...</p>
             </div>
           }
