@@ -20,21 +20,25 @@ const CivConfigItem = ({ civ }: { civ: Civ }) => {
 
 const Configuration = () => {
   return (
-    <div className="@container">
-      <h1>Configuration</h1>
-      <p className="lead">
-        Choose which civilizations you want to play with. Civs will be chosen at
-        random from your selection.
-      </p>
+    <>
+      <header className="prose dark:prose-invert">
+        <h1>Configuration</h1>
+        <p className="lead">
+          Choose which civilizations you want to play with. Civs will be chosen
+          at random from your selection.
+        </p>
+      </header>
 
-      <ul className="not-prose grid gap-2 @md:grid-flow-col @md:grid-rows-[repeat(27,auto)] @xl:grid-rows-[repeat(18,auto)] @3xl:grid-rows-[repeat(13,auto)]">
-        {CIVS.map((civ) => (
-          <li key={civ}>
-            <CivConfigItem civ={civ} />
-          </li>
-        ))}
-      </ul>
-    </div>
+      <section>
+        <ul className="civs">
+          {CIVS.map((civ) => (
+            <li key={civ}>
+              <CivConfigItem civ={civ} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    </>
   )
 }
 
@@ -42,16 +46,14 @@ export const Configuring = () => {
   const app = useAppActorRef()
 
   return (
-    <div className="page">
-      <div className="prose dark:prose-invert">
-        <button
-          className="absolute top-4 right-4"
-          onClick={() => app.send({ type: 'configuration.close' })}
-        >
-          ❌
-        </button>
-        <Configuration />
-      </div>
+    <div className="page configuring">
+      <button
+        className="close"
+        onClick={() => app.send({ type: 'configuration.close' })}
+      >
+        ❌
+      </button>
+      <Configuration />
     </div>
   )
 }

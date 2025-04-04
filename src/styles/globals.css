@@ -27,7 +27,6 @@ body,
 
   .link {
     @apply cursor-pointer font-semibold underline;
-    @apply invert;
 
     @variant hover {
       @apply decoration-2;
@@ -41,15 +40,16 @@ body,
       @apply cursor-not-allowed;
     }
   }
+
   .app {
     background: var(--background);
     color: var(--foreground);
 
-    @apply grid min-h-screen min-w-screen place-items-center;
+    @apply grid min-h-screen min-w-screen place-items-center content-center;
   }
 
   .page {
-    @apply w-full max-w-6xl p-8 pb-20 sm:p-20;
+    @apply grid w-full max-w-4xl p-8 pb-20 sm:p-20;
   }
 
   .randomizing {
@@ -57,14 +57,14 @@ body,
       'header' auto
       'controls' 1fr
       'roster' auto / 1fr;
-    @apply grid place-items-center gap-16;
+    @apply gap-16;
 
     & > header {
       grid-area: header;
     }
     & > .controls {
       grid-area: controls;
-      @apply grid place-items-center gap-4;
+      @apply grid place-items-center gap-6;
     }
     & > .roster {
       grid-area: roster;
@@ -76,6 +76,18 @@ body,
 
     .buttons {
       @apply flex items-center gap-3;
+    }
+  }
+
+  .configuring {
+    @apply gap-8;
+
+    .close {
+      @apply absolute top-4 right-4;
+    }
+
+    .civs {
+      @apply grid gap-y-2 sm:grid-cols-2 md:grid-cols-3;
     }
   }
 
