@@ -39,7 +39,7 @@ export const appMachine = setup({
       | { type: 'configuration.open' }
       | { type: 'configuration.close' }
       | { type: 'randomize' },
-    tags: {} as 'randomizable',
+    tags: {} as 'randomizable' | 'invalid',
   },
   actions: {
     disableCiv: assign({
@@ -168,18 +168,38 @@ export const appMachine = setup({
             ],
           },
         },
-        invalid: {},
+        invalid: {
+          tags: 'invalid',
+        },
       },
     },
     configuring: {
+      initial: 'indeterminate',
       on: {
         'civ.enable': {
           actions: ['enableCiv', 'save'],
+          target: '.indeterminate',
         },
         'civ.disable': {
-          actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled', 'save'],
+          actions: ['disableCiv', 'save'],
+          target: '.indeterminate',
         },
         'configuration.close': 'randomizing',
+      },
+      states: {
+        indeterminate: {
+          always: [
+            {
+              guard: 'hasAtLeast2CivsEnabled',
+              target: 'valid',
+            },
+            'invalid',
+          ],
+        },
+        valid: {},
+        invalid: {
+          tags: 'invalid',
+        },
       },
     },
   },
@@ -202,6 +222,9 @@ export const usePlayedCivs = () =>
 
 export const useIsRandomizable = () =>
   useAppSelector((snapshot) => snapshot.hasTag('randomizable'))
+
+export const useIsInvalid = () =>
+  useAppSelector((snapshot) => snapshot.hasTag('invalid'))
 
 export const useCiv = (
   civ: Civ,

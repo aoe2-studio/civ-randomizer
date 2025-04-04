@@ -1,4 +1,4 @@
-import { useAppActorRef, useCiv } from '@/actors/app'
+import { useAppActorRef, useAppSelector, useCiv } from '@/actors/app'
 import { CIVS } from '@/constants'
 import { capitalize } from '@/string'
 import type { Civ } from '@/types'
@@ -19,6 +19,8 @@ const CivConfigItem = ({ civ }: { civ: Civ }) => {
 }
 
 const Configuration = () => {
+  const isInvalid = useAppSelector((snapshot) => snapshot.hasTag('invalid'))
+
   return (
     <>
       <header className="prose dark:prose-invert">
@@ -28,6 +30,16 @@ const Configuration = () => {
           at random from your selection.
         </p>
       </header>
+
+      {isInvalid && (
+        <p className="error">
+          You must select{' '}
+          <strong>
+            <em>at least</em> two
+          </strong>{' '}
+          civs to use the randomizer.
+        </p>
+      )}
 
       <section>
         <ul className="civs">
@@ -47,13 +59,13 @@ export const Configuring = () => {
 
   return (
     <div className="page configuring">
+      <Configuration />
       <button
         className="close"
         onClick={() => app.send({ type: 'configuration.close' })}
       >
         ❌
       </button>
-      <Configuration />
     </div>
   )
 }

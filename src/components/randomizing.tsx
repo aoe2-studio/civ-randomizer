@@ -1,4 +1,4 @@
-import { useAppActorRef, useIsRandomizable } from '@/actors/app'
+import { useAppActorRef, useIsInvalid, useIsRandomizable } from '@/actors/app'
 import type { ReactNode } from 'react'
 import { CurrentCiv } from './current-civ'
 import { Roster } from './roster'
@@ -24,7 +24,7 @@ const ConfigurationButton = ({ children }: { children: ReactNode }) => {
 
 const Buttons = () => {
   const app = useAppActorRef()
-  const isRandomizable = useIsRandomizable()
+  const isInvalid = useIsInvalid()
   const onConfiguration = () => app.send({ type: 'configuration.open' })
 
   return (
@@ -37,9 +37,13 @@ const Buttons = () => {
           </span>
         </ConfigurationButton>
       </div>
-      {!isRandomizable && (
-        <p>
-          You need to enable <em>at least</em> two civs in{' '}
+      {isInvalid && (
+        <p className="error">
+          You must select{' '}
+          <strong>
+            <em>at least</em> two
+          </strong>{' '}
+          civs in{' '}
           <button onClick={onConfiguration} className="link">
             Configuration
           </button>{' '}
@@ -54,7 +58,12 @@ export const Randomizing = () => {
   return (
     <div className="page randomizing">
       <header className="prose dark:prose-invert">
-        <h1>civ randomizer</h1>
+        <h1>Civ Randomizer</h1>
+        <p className="lead">
+          Randomize unplayed civs from your preferred civs. When your match is
+          finished, click the civ to mark it as played. Once all civs have been
+          played, a new round starts with all civs marked as not yet played.
+        </p>
       </header>
 
       <section className="roster">
