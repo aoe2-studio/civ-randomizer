@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Configuration } from './configuration'
+import { Configuring } from './configuring'
 
 const meta = {
   title: 'Configuration',
-  component: Configuration,
+  component: Configuring,
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta<typeof Configuration>
+} satisfies Meta<typeof Configuring>
 
 export default meta
 type Story = StoryObj<typeof meta>

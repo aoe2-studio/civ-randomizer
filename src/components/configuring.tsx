@@ -1,8 +1,9 @@
-import { useCiv } from '@/actors/app'
+import { useAppActorRef, useCiv } from '@/actors/app'
 import { CIVS } from '@/constants'
 import { capitalize } from '@/string'
 import type { Civ } from '@/types'
 import { CivIcon } from './civ-icon'
+import { PageLayout } from './page-layout'
 
 const CivConfigItem = ({ civ }: { civ: Civ }) => {
   const { isEnabled, toggleEnabled } = useCiv(civ)
@@ -18,15 +19,13 @@ const CivConfigItem = ({ civ }: { civ: Civ }) => {
   )
 }
 
-export const Configuration = () => {
+const Configuration = () => {
   return (
-    <div className="@container">
-      <a id="configuration" />
-
-      <h2>Configuration</h2>
+    <div className="@container relative">
+      <h1>Configuration</h1>
       <p className="lead">
-        Choose which civilizations you want to play with. Civs will be
-        randomized based on your selection.
+        Choose which civilizations you want to play with. Civs will be chosen at
+        random from your selection.
       </p>
 
       <ul className="not-prose grid gap-2 @md:grid-flow-col @md:grid-rows-[repeat(27,auto)] @xl:grid-rows-[repeat(18,auto)] @3xl:grid-rows-[repeat(13,auto)]">
@@ -36,6 +35,24 @@ export const Configuration = () => {
           </li>
         ))}
       </ul>
+    </div>
+  )
+}
+
+export const Configuring = () => {
+  const app = useAppActorRef()
+
+  return (
+    <div className="absolute inset-0 z-10">
+      <button
+        className="absolute top-4 right-4"
+        onClick={() => app.send({ type: 'configuration.close' })}
+      >
+        ❌
+      </button>
+      <PageLayout>
+        <Configuration />
+      </PageLayout>
     </div>
   )
 }

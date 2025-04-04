@@ -36,6 +36,8 @@ export const appMachine = setup({
       | { type: 'civ.disable'; civ: Civ }
       | { type: 'civ.play'; civ: Civ }
       | { type: 'civ.unplay'; civ: Civ }
+      | { type: 'configuration.open' }
+      | { type: 'configuration.close' }
       | { type: 'randomize' },
     tags: {} as 'randomizable',
   },
@@ -52,7 +54,7 @@ export const appMachine = setup({
         return [...context.enabled, event.civ].sort()
       },
     }),
-    loadFromLocalStorage: assign(() => {
+    load: assign(() => {
       const data = localStorage.getItem('data')
 
       try {
@@ -88,7 +90,7 @@ export const appMachine = setup({
     resetPlayedCivs: assign({
       played: () => [],
     }),
-    saveToLocalStorage: ({ context }) => {
+    save: ({ context }) => {
       localStorage.setItem('data', JSON.stringify(context))
     },
     unplayCiv: assign({
@@ -125,58 +127,61 @@ export const appMachine = setup({
   },
   initial: 'loading',
   on: {
-    'civ.enable': {
-      actions: 'enableCiv',
-      target: '.saving',
-    },
-    'civ.disable': {
-      actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled'],
-      target: '.saving',
-    },
     'civ.play': {
-      actions: 'playCiv',
-      target: '.saving',
+      actions: ['playCiv', 'save'],
     },
     'civ.unplay': {
-      actions: 'unplayCiv',
-      target: '.saving',
+      actions: ['unplayCiv', 'save'],
     },
   },
   states: {
     loading: {
-      entry: 'loadFromLocalStorage',
-      always: 'indeterminate',
+      entry: 'load',
+      always: 'randomizing',
     },
-    saving: {
-      entry: 'saveToLocalStorage',
-      always: 'indeterminate',
-    },
-    indeterminate: {
-      always: [
-        {
-          guard: 'hasAtLeast2CivsEnabled',
-          target: 'valid',
-        },
-        'invalid',
-      ],
-    },
-    valid: {
-      tags: 'randomizable',
+    randomizing: {
+      initial: 'indeterminate',
       on: {
-        randomize: [
-          {
-            guard: 'allCivsPlayed',
-            actions: ['resetPlayedCivs', 'randomize'],
-            target: 'saving',
+        'configuration.open': 'configuring',
+      },
+      states: {
+        indeterminate: {
+          always: [
+            {
+              guard: 'hasAtLeast2CivsEnabled',
+              target: 'valid',
+            },
+            'invalid',
+          ],
+        },
+        valid: {
+          tags: 'randomizable',
+          on: {
+            randomize: [
+              {
+                guard: 'allCivsPlayed',
+                actions: ['resetPlayedCivs', 'randomize', 'save'],
+              },
+              {
+                actions: ['randomize', 'save'],
+              },
+            ],
           },
-          {
-            actions: 'randomize',
-            target: 'saving',
-          },
-        ],
+        },
+        invalid: {},
       },
     },
-    invalid: {},
+    configuring: {
+      on: {
+        'civ.enable': {
+          actions: ['enableCiv', 'save'],
+        },
+        'civ.disable': {
+          actions: ['disableCiv', 'unsetCurrentCivIfNoLongerEnabled', 'save'],
+        },
+        'configuration.close': 'randomizing',
+      },
+    },
   },
 })
 
