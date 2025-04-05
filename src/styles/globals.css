@@ -57,7 +57,7 @@ body,
   }
 
   .page {
-    @apply grid w-full max-w-4xl p-8 pb-20 sm:p-20;
+    @apply grid w-full max-w-4xl gap-8 p-8 pb-20 sm:p-20;
   }
 
   .error {
@@ -69,6 +69,7 @@ body,
       'header' auto
       'controls' 1fr
       'roster' auto / 1fr;
+
     @apply gap-16;
 
     & > header {
@@ -92,14 +93,12 @@ body,
   }
 
   .configuring {
-    @apply gap-8;
-
     .close {
       @apply absolute top-4 right-4;
     }
 
     .civs {
-      @apply grid gap-y-2 sm:grid-cols-2 md:grid-cols-3;
+      @apply grid gap-2 gap-y-2 sm:grid-cols-2 md:grid-cols-3;
     }
   }
 
