@@ -33,7 +33,7 @@ const CurrentCivInner = ({ civ }: { civ: Civ }) => {
             <PlayedCheck show={hasBeenPlayed} />
             <CivIcon civ={civ} size="lg" />
           </div>
-          <p>{name}</p>
+          <p className="current-civ">{name}</p>
         </motion.div>
       </AnimatePresence>
     </motion.div>
