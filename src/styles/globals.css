@@ -25,6 +25,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+:is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-cinzel), serif;
+}
+
 @layer components {
   button {
     @apply rounded border border-gray-500 p-3 py-2 hover:border-gray-600 active:border-gray-700 disabled:border-gray-300 disabled:text-gray-400;

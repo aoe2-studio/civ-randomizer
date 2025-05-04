@@ -5,11 +5,16 @@ import { Randomize } from '@/components/randomize'
 import { Roster } from '@/components/roster'
 import { useIsClient } from '@/hooks'
 import { MotionConfig } from 'motion/react'
-import { Inter } from 'next/font/google'
+import { Cinzel, Inter } from 'next/font/google'
 import Head from 'next/head'
 
 const inter = Inter({
   subsets: ['latin'],
+})
+const cinzel = Cinzel({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-cinzel',
 })
 
 export default function Home() {
@@ -22,7 +27,7 @@ export default function Home() {
       </Head>
       <MotionConfig reducedMotion="user">
         <div
-          className={`${inter.className} mx-auto prose min-h-screen w-screen max-w-6xl p-8 pb-20 antialiased sm:p-20 dark:prose-invert`}
+          className={`${inter.className} ${cinzel.variable} mx-auto prose min-h-screen w-screen max-w-6xl p-8 pb-20 antialiased sm:p-20 dark:prose-invert`}
         >
           {isClient ?
             <AppProvider>
