@@ -1,11 +1,12 @@
 import { useCiv, useCurrentCiv } from '@/actors/app'
-import { capitalize } from '@/string'
+import { civData } from '@/civ-data'
 import type { Civ } from '@/types'
 import { AnimatePresence, motion } from 'motion/react'
 import { CivIcon } from './civ-icon'
 import { PlayedCheck } from './played-check'
 
 const CurrentCivInner = ({ civ }: { civ: Civ }) => {
+  const { name } = civData[civ]
   const { hasBeenPlayed, togglePlayed } = useCiv(civ)
 
   return (
@@ -32,7 +33,7 @@ const CurrentCivInner = ({ civ }: { civ: Civ }) => {
             <PlayedCheck show={hasBeenPlayed} />
             <CivIcon civ={civ} size="lg" />
           </div>
-          <p>{capitalize(civ)}</p>
+          <p>{name}</p>
         </motion.div>
       </AnimatePresence>
     </motion.div>

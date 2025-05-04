@@ -1,18 +1,19 @@
 import { useCiv } from '@/actors/app'
+import { civData } from '@/civ-data'
 import { CIVS } from '@/constants'
-import { capitalize } from '@/string'
 import type { Civ } from '@/types'
 import { CivIcon } from './civ-icon'
 
 const CivConfigItem = ({ civ }: { civ: Civ }) => {
   const { isEnabled, toggleEnabled } = useCiv(civ)
+  const { name } = civData[civ]
 
   return (
     <label className="flex items-center gap-2">
       <input type="checkbox" checked={isEnabled} onChange={toggleEnabled} />
       <span className="flex items-center gap-0.5">
         <CivIcon civ={civ} size="sm" />
-        {capitalize(civ)}
+        {name}
       </span>
     </label>
   )
