@@ -1,4 +1,4 @@
-import { civData } from '@/civ-data'
+import { useCiv } from '@/actors/app'
 import { CIV_ICON_SIZE } from '@/constants'
 import type { Civ } from '@/types'
 import Image from 'next/image'
@@ -20,7 +20,7 @@ export const CivIcon = ({
   className?: string
   size?: CivIconSize
 }) => {
-  const { name, icon } = civData[civ]
+  const { name, icon } = useCiv(civ)
   return (
     <Image
       src={icon}

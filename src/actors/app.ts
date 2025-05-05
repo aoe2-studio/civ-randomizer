@@ -1,4 +1,5 @@
 import { getRandomItemFrom } from '@/array'
+import { civData, type CivData } from '@/civ-data'
 import { CIVS } from '@/constants'
 import type { Civ } from '@/types'
 import { createActorContext } from '@xstate/react'
@@ -200,12 +201,13 @@ export const useIsRandomizable = () =>
 
 export const useCiv = (
   civ: Civ,
-): {
+): CivData & {
   isEnabled: boolean
   hasBeenPlayed: boolean
   toggleEnabled: () => void
   togglePlayed: () => void
 } => {
+  const data = civData[civ]
   const app = useAppActorRef()
   const isEnabled = useEnabledCivs().includes(civ)
   const hasBeenPlayed = usePlayedCivs().includes(civ)
@@ -223,6 +225,7 @@ export const useCiv = (
   }, [app, civ, hasBeenPlayed])
 
   return {
+    ...data,
     isEnabled,
     hasBeenPlayed,
     toggleEnabled,
