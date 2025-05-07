@@ -127,6 +127,16 @@ export const civData: Record<Civ, CivData> = {
     name: "Japanese",
     icon: "/aoe2/civs/japanese.png",
   },
+  jurchens: {
+    id: "jurchens",
+    name: "Jurchens",
+    icon: "/aoe2/civs/jurchens.png",
+  },
+  khitans: {
+    id: "khitans",
+    name: "Khitans",
+    icon: "/aoe2/civs/khitans.png",
+  },
   khmer: {
     id: "khmer",
     name: "Khmer",
@@ -197,6 +207,11 @@ export const civData: Record<Civ, CivData> = {
     name: "Sicilians",
     icon: "/aoe2/civs/sicilians.png",
   },
+  shu: {
+    id: "shu",
+    name: "Shu",
+    icon: "/aoe2/civs/shu.png",
+  },
   slavs: {
     id: "slavs",
     name: "Slavs",
@@ -231,5 +246,15 @@ export const civData: Record<Civ, CivData> = {
     id: "vikings",
     name: "Vikings",
     icon: "/aoe2/civs/vikings.png",
+  },
+  wu: {
+    id: "wu",
+    name: "Wu",
+    icon: "/aoe2/civs/wu.png",
+  },
+  wei: {
+    id: "wei",
+    name: "Wei",
+    icon: "/aoe2/civs/wei.png",
   },
 };

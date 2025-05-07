@@ -23,6 +23,8 @@ export const CIVS = [
   'incas',
   'italians',
   'japanese',
+  'jurchens',
+  'khitans',
   'khmer',
   'koreans',
   'lithuanians',
@@ -37,6 +39,7 @@ export const CIVS = [
   'romans',
   'saracens',
   'sicilians',
+  'shu',
   'slavs',
   'spanish',
   'tatars',
@@ -44,6 +47,8 @@ export const CIVS = [
   'turks',
   'vietnamese',
   'vikings',
+  'wu',
+  'wei',
 ] as const
 
 export const CIV_ICON_SIZE = 104
