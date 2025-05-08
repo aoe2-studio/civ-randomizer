@@ -1,3 +1,5 @@
+'use client'
+
 import { getRandomItemFrom } from '@/array'
 import { civData, type CivData } from '@/civ-data'
 import { CIVS } from '@/constants'
@@ -38,7 +40,7 @@ export const appMachine = setup({
       | { type: 'civ.play'; civ: Civ }
       | { type: 'civ.unplay'; civ: Civ }
       | { type: 'randomize' },
-    tags: {} as 'randomizable',
+    tags: {} as 'randomizable' | 'ready',
   },
   actions: {
     disableCiv: assign({
@@ -162,7 +164,7 @@ export const appMachine = setup({
       ],
     },
     valid: {
-      tags: 'randomizable',
+      tags: ['randomizable', 'ready'],
       on: {
         randomize: [
           {
@@ -177,7 +179,9 @@ export const appMachine = setup({
         ],
       },
     },
-    invalid: {},
+    invalid: {
+      tags: 'ready',
+    },
   },
 })
 
